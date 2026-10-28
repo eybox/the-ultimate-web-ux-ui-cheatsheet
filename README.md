@@ -49,10 +49,10 @@ A one-page reference for product teams: where high-level design theory meets the
 | Rule | Description | Why it works |
 | --- | --- | --- |
 | **The "Golden" Search** | Search bars should be at least 27 characters wide. | Fits the average complex query without clipping text. |
-| **The Rule of 3** | No essential piece of information should be more than 3 clicks away. | Prevents "pogo-sticking" through deep menus. |
+| **Scent of Information** | Click count matters less than clarity: every link and menu label should make the next step obvious. | Users don't give up after 3 clicks; they give up when they lose the trail. Clear labels prevent "pogo-sticking" through deep menus. |
 | **Peak-End Rule** | Users judge an experience based on its peak and its end. | Make the "Success" screen (after a task) delightful. |
 | **Aesthetic-Usability Effect** | Users are more tolerant of minor usability issues if the UI is beautiful. | High-fidelity polish actually reduces user frustration. |
-| **The Buffer Zone** | Add a 20ms delay to hover-dropdowns. | Prevents menus from flickering open/shut if a mouse just "glances" past. |
+| **The Buffer Zone** | Give hover-dropdowns a short delay: ~100ms before opening and ~300–500ms before closing. | Prevents menus from flickering open/shut if a mouse just "glances" past, and keeps them open while the cursor travels into them. |
 
 ---
 
@@ -69,3 +69,9 @@ A one-page reference for product teams: where high-level design theory meets the
 ---
 
 Made by [Evgeni Yordanov](https://github.com/eybox).
+
+> **Note:** The README is the up-to-date version. Two rules have been revised since the image was made: "The Rule of 3" is now "Scent of Information", and the Buffer Zone delay has changed from 20ms to ~100ms open / ~300–500ms close.
+
+## License
+
+[CC BY-NC 4.0](LICENSE): you can share and adapt this cheat sheet for non-commercial use as long as you credit the author.
