@@ -1,0 +1,470 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>UX/UI Cheat Sheet</title>
+<!--
+  Source of cheatsheet.png. To re-render (from the repo root):
+  chrome --headless=new --hide-scrollbars --force-device-scale-factor=2 --window-size=960,2400 --screenshot=cheatsheet.png src/cheatsheet.html
+  then crop the empty space below the footer.
+-->
+<style>
+  :root {
+    --page: #f6f7fb;
+    --ink: #111827;
+    --ink-2: #374151;
+    --muted: #4b5563;
+    --line: #d9dde5;
+    --white: #ffffff;
+
+    --blue: #2563eb;   --blue-bg: #eef4ff;   --blue-bd: #bfd3fb;
+    --purple: #7c3aed; --purple-bg: #f5f0ff; --purple-bd: #d8c8fb;
+    --green: #15803d;  --green-bg: #edf9f1;  --green-bd: #b6e4c5;
+    --yellow: #facc15; --yellow-bg: #fffbea; --yellow-bd: #f3e08a;
+    --orange: #c2410c; --orange-bg: #fff4ec; --orange-bd: #f6cdb0;
+    --red: #dc2626;    --red-bg: #fff1f1;    --red-bd: #f5c2c2;
+
+    --ok: #15803d;
+    --err: #dc2626;
+    --sans: "Segoe UI", system-ui, -apple-system, BlinkMacSystemFont, Roboto, "Helvetica Neue", Arial, sans-serif;
+    --mono: "Cascadia Code", Consolas, "SF Mono", Menlo, monospace;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--page); color: var(--ink); font-family: var(--sans); -webkit-font-smoothing: antialiased; }
+  .poster { width: 960px; padding: 40px 32px 32px; }
+
+  header { text-align: center; margin-bottom: 28px; }
+  header h1 { font-size: 44px; line-height: 1.05; font-weight: 800; letter-spacing: -0.5px; color: #0f1b3d; }
+  header h1 .year { font-weight: 400; }
+  header p { margin-top: 10px; font-size: 15px; color: var(--muted); }
+
+  .top { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; align-items: stretch; }
+  .stack { display: flex; flex-direction: column; gap: 16px; }
+  .bottom { display: grid; grid-template-columns: 2fr 1fr; gap: 16px; margin-top: 16px; }
+
+  .card { border: 2px solid; border-radius: 16px; overflow: hidden; display: flex; flex-direction: column; }
+  .card > h2 { font-size: 15px; font-weight: 700; letter-spacing: 0.3px; text-transform: uppercase; color: var(--white); padding: 10px 16px; }
+  .card .body { padding: 14px 16px 16px; display: flex; flex-direction: column; gap: 14px; flex: 1; }
+  .card .body.spread { justify-content: space-between; }
+
+  .blue   { border-color: var(--blue-bd);   background: var(--blue-bg); }   .blue > h2   { background: var(--blue); }
+  .purple { border-color: var(--purple-bd); background: var(--purple-bg); } .purple > h2 { background: var(--purple); }
+  .green  { border-color: var(--green-bd);  background: var(--green-bg); }  .green > h2  { background: var(--green); }
+  .yellow { border-color: var(--yellow-bd); background: var(--yellow-bg); } .yellow > h2 { background: var(--yellow); color: var(--ink); }
+  .orange { border-color: var(--orange-bd); background: var(--orange-bg); } .orange > h2 { background: var(--orange); }
+  .red    { border-color: var(--red-bd);    background: var(--red-bg); }    .red > h2    { background: var(--red); }
+
+  .item h3 { font-size: 15px; font-weight: 700; margin-top: 8px; }
+  .item p { font-size: 12.5px; line-height: 1.4; color: var(--ink-2); margin-top: 2px; }
+  .item + .item { border-top: 1px solid rgba(17, 24, 39, 0.08); padding-top: 14px; }
+  .viz { background: var(--white); border: 1px solid var(--line); border-radius: 10px; padding: 10px; }
+  code, .mono { font-family: var(--mono); font-size: 11px; }
+
+  /* 1. Layout */
+  .grid8 { display: flex; align-items: flex-end; gap: 10px; height: 64px; }
+  .grid8 div { background: var(--blue); border-radius: 3px; opacity: 0.85; position: relative; }
+  .grid8 span { position: absolute; top: -16px; left: 50%; transform: translateX(-50%); font-size: 10px; font-weight: 700; color: var(--blue); }
+  .grid8-wrap { background-image: linear-gradient(rgba(37,99,235,.08) 1px, transparent 1px), linear-gradient(90deg, rgba(37,99,235,.08) 1px, transparent 1px); background-size: 8px 8px; padding: 18px 10px 8px; }
+
+  .fpage { position: relative; height: 92px; padding: 0; overflow: hidden; }
+  .fpage .bar { position: absolute; height: 5px; border-radius: 3px; background: #d1d5db; }
+  .fpage .hl { position: absolute; background: rgba(37, 99, 235, 0.22); border-radius: 6px; }
+  .fpage .cta { position: absolute; top: 8px; right: 10px; background: var(--blue); color: var(--white); font-size: 9px; font-weight: 700; padding: 3px 8px; border-radius: 5px; }
+
+  .ratio { display: flex; height: 30px; border-radius: 8px; overflow: hidden; font-size: 11px; font-weight: 700; }
+  .ratio div { display: flex; align-items: center; justify-content: center; }
+
+  .touch { display: flex; align-items: center; gap: 14px; }
+  .target { width: 44px; height: 44px; border: 2px dashed var(--blue); border-radius: 8px; display: grid; place-items: center; position: relative; flex: none; }
+  .target .icon { width: 20px; height: 20px; border-radius: 50%; background: var(--blue); }
+  .dim { font-size: 11px; font-weight: 700; color: var(--blue); }
+
+  /* 2. Forms */
+  .form label { display: block; font-size: 11.5px; font-weight: 700; margin-bottom: 3px; }
+  .field { display: flex; align-items: center; justify-content: space-between; border: 1.5px solid #9ca3af; border-radius: 7px; padding: 5px 8px; font-size: 12px; background: var(--white); }
+  .field.ok { border-color: var(--ok); }
+  .field.err { border-color: var(--err); }
+  .hint { font-size: 11px; margin-top: 3px; display: flex; align-items: center; gap: 4px; }
+  .hint.err { color: var(--err); font-weight: 600; }
+  .form .row + .row { margin-top: 9px; }
+  .tag { font-size: 9.5px; font-weight: 700; color: var(--purple); background: var(--purple-bg); border: 1px solid var(--purple-bd); border-radius: 999px; padding: 1px 7px; }
+  .rules { list-style: none; display: flex; flex-direction: column; gap: 8px; }
+  .rules li { display: grid; grid-template-columns: 18px 1fr; gap: 6px; font-size: 12.5px; line-height: 1.35; color: var(--ink-2); }
+  .rules li b { color: var(--ink); }
+  .rules svg { margin-top: 1px; }
+
+  /* 3. Interaction */
+  .gauge { display: flex; align-items: center; gap: 12px; }
+  .gauge strong { font-size: 22px; color: var(--green); display: block; line-height: 1; }
+  .gauge small { font-size: 11px; color: var(--muted); }
+  .loaders { display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center; }
+  .skel { display: flex; gap: 6px; }
+  .skel .ph { background: #e5e7eb; border-radius: 4px; }
+  .lbl { font-size: 10px; font-weight: 700; text-align: center; margin-top: 5px; }
+  .lbl.good { color: var(--ok); }
+  .lbl.meh { color: var(--muted); }
+  .states { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .btn { font-size: 11px; font-weight: 700; text-align: center; padding: 6px 4px; border-radius: 7px; border: 1.5px solid var(--green); color: var(--green); background: var(--white); }
+  .btn.hover { background: #dcf3e3; }
+  .btn.active { background: var(--green); color: var(--white); transform: translateY(1px); }
+  .btn.focus { outline: 3px solid #1d4ed8; outline-offset: 2px; }
+  .menu { font-size: 11px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .menu .grp b { display: block; font-size: 9.5px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); margin-bottom: 3px; }
+  .menu .grp div { padding: 2px 0; }
+  .menu .more { grid-column: 1 / -1; color: var(--green); font-weight: 700; }
+
+  /* 4. Accessibility */
+  .a11y-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px 12px; }
+  .a11y-grid .item + .item { border-top: 0; padding-top: 0; }
+  .a11y-grid .item h3 { font-size: 13.5px; margin-top: 6px; }
+  .a11y-grid .item p { font-size: 11.5px; }
+  .a11y-grid .viz { padding: 8px; height: 76px; display: flex; flex-direction: column; justify-content: center; }
+  .contrast { display: flex; gap: 6px; }
+  .contrast div { flex: 1; text-align: center; border-radius: 6px; padding: 4px 0; border: 1px solid var(--line); }
+  .contrast .aa { font-size: 20px; font-weight: 800; line-height: 1.1; }
+  .contrast .r { font-size: 9.5px; font-weight: 700; }
+  .errmsg { font-size: 10.5px; border-radius: 6px; padding: 4px 6px; }
+  .errmsg.bad { border: 1.5px solid var(--err); color: var(--ink-2); }
+  .errmsg.good { border: 1.5px solid var(--err); color: var(--err); font-weight: 700; display: flex; gap: 4px; align-items: center; margin-top: 5px; }
+  .errmsg .mark { font-size: 9px; float: right; font-weight: 700; }
+  .modal { border: 1.5px solid var(--ink-2); border-radius: 6px; padding: 5px 6px; position: relative; }
+  .modal .row { display: flex; gap: 5px; }
+  .modal .el { font-size: 9.5px; padding: 2px 6px; border-radius: 4px; border: 1px solid #9ca3af; }
+  .modal .el.f { outline: 2px solid #1d4ed8; outline-offset: 1px; }
+  .keys { display: flex; flex-wrap: wrap; gap: 5px; justify-content: center; }
+  .kbd { font-size: 10.5px; font-weight: 700; padding: 3px 7px; border-radius: 5px; border: 1px solid #9ca3af; border-bottom-width: 3px; background: #f9fafb; }
+
+  /* 5. Pro tips */
+  table { width: 100%; height: 100%; border-collapse: collapse; }
+  thead tr { height: 1px; }
+  th { font-size: 11px; text-transform: uppercase; letter-spacing: 0.5px; color: var(--muted); text-align: left; padding: 0 8px 8px; border-bottom: 2px solid var(--orange-bd); }
+  td { font-size: 12.5px; line-height: 1.35; color: var(--ink-2); padding: 10px 8px; border-bottom: 1px solid rgba(17, 24, 39, 0.08); vertical-align: middle; }
+  tr:last-child td { border-bottom: 0; }
+  td.ic { width: 44px; padding-right: 0; }
+  td.rule { font-weight: 700; color: var(--ink); width: 150px; font-size: 13px; }
+  td.rule small { display: block; font-weight: 600; color: var(--orange); font-size: 11px; }
+  .ico { width: 34px; height: 34px; border-radius: 9px; background: var(--white); border: 1px solid var(--orange-bd); display: grid; place-items: center; }
+
+  /* 6. Front-end */
+  .cls { display: flex; gap: 10px; align-items: center; }
+  .img-box { width: 84px; aspect-ratio: 16 / 9; border-radius: 6px; background: linear-gradient(135deg, #fecaca, #fca5a5); display: grid; place-items: center; flex: none; }
+  .fonts { display: flex; gap: 10px; align-items: center; }
+  .fonts .big { font-size: 40px; font-weight: 600; line-height: 1; flex: none; }
+  .errs { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .errs .viz { text-align: center; padding: 8px 6px; }
+  .errs strong { display: block; font-size: 20px; font-weight: 800; color: var(--red); line-height: 1.1; }
+  .errs span { display: block; font-size: 10px; color: var(--muted); margin: 2px 0 5px; }
+  .errs em { font-style: normal; font-size: 10px; font-weight: 700; color: var(--white); background: var(--red); padding: 2px 8px; border-radius: 5px; }
+
+  .golden { margin-top: 16px; display: flex; align-items: center; gap: 14px; background: #0f1b3d; color: var(--white); border-radius: 16px; padding: 16px 20px; }
+  .golden p { font-size: 15.5px; line-height: 1.4; }
+  .golden b { color: #fde68a; }
+  footer { margin-top: 14px; display: flex; justify-content: space-between; font-size: 12px; color: var(--muted); }
+</style>
+</head>
+<body>
+<main class="poster">
+
+  <header>
+    <h1>The Ultimate UX/UI &amp; Front-End<br>Cheat Sheet <span class="year">(2026)</span></h1>
+    <p>Design theory meets front-end reality: a one-page reference for product teams.</p>
+  </header>
+
+  <section class="top">
+
+    <!-- 1. Layout & Visual Rhythm -->
+    <article class="card blue">
+      <h2>1. Layout &amp; Visual Rhythm</h2>
+      <div class="body spread">
+        <div class="item">
+          <div class="viz grid8-wrap">
+            <div class="grid8">
+              <div style="width:16px;height:8px"><span>8</span></div>
+              <div style="width:16px;height:16px"><span>16</span></div>
+              <div style="width:16px;height:24px"><span>24</span></div>
+              <div style="width:16px;height:32px"><span>32</span></div>
+              <div style="width:16px;height:40px"><span>40</span></div>
+              <div style="width:16px;height:48px"><span>48</span></div>
+            </div>
+          </div>
+          <h3>8pt Grid System</h3>
+          <p>Padding, margins and heights in steps of 8px. Everything aligns, and handoff gets simpler.</p>
+        </div>
+
+        <div class="item">
+          <div class="viz fpage">
+            <div class="hl" style="top:6px;left:6px;width:150px;height:22px"></div>
+            <div class="hl" style="top:34px;left:6px;width:100px;height:18px"></div>
+            <div class="hl" style="top:28px;left:6px;width:26px;height:58px"></div>
+            <div class="bar" style="top:14px;left:12px;width:130px;height:7px;background:#374151"></div>
+            <div class="cta">Get started</div>
+            <div class="bar" style="top:40px;left:12px;width:84px"></div>
+            <div class="bar" style="top:52px;left:12px;width:190px"></div>
+            <div class="bar" style="top:62px;left:12px;width:170px"></div>
+            <div class="bar" style="top:72px;left:12px;width:180px"></div>
+          </div>
+          <h3>Visual Hierarchy (F-Pattern)</h3>
+          <p>Users scan in an F shape. Anchor the eye with headings; put the main CTA top-left or top-right.</p>
+        </div>
+
+        <div class="item">
+          <div class="ratio">
+            <div style="width:60%;background:#e5e7eb;color:var(--ink)">60% neutral</div>
+            <div style="width:30%;background:var(--blue);color:var(--white)">30% brand</div>
+            <div style="width:10%;background:var(--orange);color:var(--white)">10%</div>
+          </div>
+          <h3>The 60-30-10 Rule</h3>
+          <p>60% dominant neutral, 30% brand color, 10% accent, saved for CTAs.</p>
+        </div>
+
+        <div class="item">
+          <div class="viz touch">
+            <div class="target"><div class="icon"></div></div>
+            <div>
+              <div class="dim">44 × 44px minimum</div>
+              <div style="font-size:11px;color:var(--muted)">Fingers, thumbs and touch laptops</div>
+            </div>
+          </div>
+          <h3>Touch Targets</h3>
+          <p>Every interactive element at least 44×44px, even on “desktop” sites.</p>
+        </div>
+      </div>
+    </article>
+
+    <div class="stack">
+      <!-- 2. Forms & Data Entry -->
+      <article class="card purple">
+        <h2>2. Forms &amp; Data Entry</h2>
+        <div class="body">
+          <div class="viz form">
+            <div class="row">
+              <label>Email</label>
+              <div class="field ok"><span>ana@example.com</span>
+                <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="#15803d" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+              </div>
+            </div>
+            <div class="row">
+              <label>Password</label>
+              <div class="field err"><span>••••</span>
+                <svg width="14" height="14" viewBox="0 0 16 16" aria-hidden="true"><circle cx="8" cy="8" r="7" fill="#dc2626"/><path d="M8 4.5v4.2M8 11.2v.3" stroke="#fff" stroke-width="2" stroke-linecap="round"/></svg>
+              </div>
+              <div class="hint err">Use at least 8 characters</div>
+            </div>
+            <div class="row">
+              <label>Country</label>
+              <div class="field"><span>Bulgaria</span><span class="tag">Pre-filled</span></div>
+            </div>
+          </div>
+          <ul class="rules">
+            <li><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="#7c3aed" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Single column.</b> One vertical line, less cognitive load.</span></li>
+            <li><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="#7c3aed" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Labels above, always.</b> Never use placeholders as labels.</span></li>
+            <li><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="#7c3aed" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Inline validation.</b> Check each field on blur, not on submit.</span></li>
+            <li><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M3 8.5l3 3 7-7" fill="none" stroke="#7c3aed" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg><span><b>Smart defaults.</b> Pre-fill what you can: location, last-used card.</span></li>
+          </ul>
+        </div>
+      </article>
+
+      <!-- 4. Accessibility -->
+      <article class="card yellow">
+        <h2>4. Accessibility (A11y)</h2>
+        <div class="body">
+          <div class="a11y-grid">
+            <div class="item">
+              <div class="viz">
+                <div class="contrast">
+                  <div><div class="aa" style="color:#111827">Aa</div><div class="r" style="color:var(--ok)">4.5:1+ ✓</div></div>
+                  <div><div class="aa" style="color:#c4c8cf">Aa</div><div class="r" style="color:var(--err)">1.7:1 ✗</div></div>
+                </div>
+              </div>
+              <h3>Contrast Ratios</h3>
+              <p>At least 4.5:1 for normal text.</p>
+            </div>
+            <div class="item">
+              <div class="viz">
+                <div class="errmsg bad">31/02/2026 <span class="mark" style="color:var(--err)">✗</span></div>
+                <div class="errmsg good">
+                  <svg width="11" height="11" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 1.5L15 14H1z" fill="#dc2626"/><path d="M8 6v3.5M8 11.6v.2" stroke="#fff" stroke-width="1.8" stroke-linecap="round"/></svg>
+                  Invalid date
+                </div>
+              </div>
+              <h3>Not Color Alone</h3>
+              <p>Pair red with an icon and text.</p>
+            </div>
+            <div class="item">
+              <div class="viz">
+                <div class="modal">
+                  <div style="font-size:9.5px;font-weight:700;margin-bottom:4px">Delete file?</div>
+                  <div class="row"><span class="el">Cancel</span><span class="el f">Delete</span></div>
+                  <svg width="44" height="24" viewBox="0 0 44 24" style="position:absolute;right:4px;top:6px" aria-hidden="true"><path d="M6 18 C 20 26, 36 20, 36 6" fill="none" stroke="#1d4ed8" stroke-width="1.6"/><path d="M32 8l4-4 3 5" fill="none" stroke="#1d4ed8" stroke-width="1.6" stroke-linejoin="round"/></svg>
+                </div>
+              </div>
+              <h3>Focus Traps</h3>
+              <p>In a modal, Tab cycles only inside it.</p>
+            </div>
+            <div class="item">
+              <div class="viz">
+                <div class="keys">
+                  <span class="kbd">Tab</span><span class="kbd">Enter</span><span class="kbd">Esc</span>
+                  <span class="kbd">Space</span><span class="kbd">← →</span>
+                </div>
+              </div>
+              <h3>Keyboard Nav</h3>
+              <p>Every action works without a mouse.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+    </div>
+
+    <!-- 3. Interaction & Feedback -->
+    <article class="card green">
+      <h2>3. Interaction &amp; Feedback</h2>
+      <div class="body spread">
+        <div class="item">
+          <div class="viz gauge">
+            <svg width="70" height="42" viewBox="0 0 70 42" aria-hidden="true">
+              <path d="M7 38 A 28 28 0 0 1 63 38" fill="none" stroke="#e5e7eb" stroke-width="8" stroke-linecap="round"/>
+              <path d="M7 38 A 28 28 0 0 1 22 13" fill="none" stroke="#15803d" stroke-width="8" stroke-linecap="round"/>
+              <line x1="35" y1="38" x2="20" y2="20" stroke="#111827" stroke-width="3" stroke-linecap="round"/>
+              <circle cx="35" cy="38" r="4" fill="#111827"/>
+            </svg>
+            <div><strong>&lt;100ms</strong><small>feels instant</small></div>
+          </div>
+          <h3>The 100ms Rule</h3>
+          <p>Slower feels laggy. Use Optimistic UI: update before the server confirms likes and deletes.</p>
+        </div>
+
+        <div class="item">
+          <div class="viz loaders">
+            <div>
+              <div class="skel">
+                <div class="ph" style="width:36px;height:36px"></div>
+                <div style="flex:1;display:flex;flex-direction:column;gap:5px;justify-content:center">
+                  <div class="ph" style="height:7px;width:90%"></div>
+                  <div class="ph" style="height:7px;width:70%"></div>
+                  <div class="ph" style="height:7px;width:80%"></div>
+                </div>
+              </div>
+              <div class="lbl good">Skeleton ✓</div>
+            </div>
+            <div>
+              <svg width="36" height="36" viewBox="0 0 36 36" aria-hidden="true"><circle cx="18" cy="18" r="13" fill="none" stroke="#e5e7eb" stroke-width="4"/><path d="M18 5 A 13 13 0 0 1 31 18" fill="none" stroke="#9ca3af" stroke-width="4" stroke-linecap="round"/></svg>
+              <div class="lbl meh">Spinner</div>
+            </div>
+          </div>
+          <h3>Skeleton Loaders &gt; Spinners</h3>
+          <p>Mimic the layout while loading to shorten perceived wait time.</p>
+        </div>
+
+        <div class="item">
+          <div class="viz states">
+            <div class="btn">Normal</div>
+            <div class="btn hover">:hover</div>
+            <div class="btn active">:active</div>
+            <div class="btn focus">:focus</div>
+          </div>
+          <h3>Active States</h3>
+          <p>Every button needs hover, active and focus states, or the app feels frozen.</p>
+        </div>
+
+        <div class="item">
+          <div class="viz menu">
+            <div class="grp"><b>Account</b><div>Profile</div><div>Billing</div></div>
+            <div class="grp"><b>Workspace</b><div>Members</div><div>Settings</div></div>
+            <div class="more">Show more ▾</div>
+          </div>
+          <h3>Hick’s Law</h3>
+          <p>More choices, slower decisions. Group long menus and disclose progressively.</p>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <section class="bottom">
+    <!-- 5. Pro tips -->
+    <article class="card orange">
+      <h2>5. Pro Tips &amp; “Unknown” Rules of Thumb</h2>
+      <div class="body">
+        <table>
+          <thead><tr><th></th><th>Rule</th><th>What to do</th><th>Why it works</th></tr></thead>
+          <tbody>
+            <tr>
+              <td class="ic"><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c2410c" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5L21 21"/></svg></div></td>
+              <td class="rule">The “Golden” Search<small>≥ 27 characters</small></td>
+              <td>Make search boxes at least 27 characters wide.</td>
+              <td>Fits most complex queries without clipping.</td>
+            </tr>
+            <tr>
+              <td class="ic"><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c2410c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 22V3"/><path d="M12 5h7l2 2.5-2 2.5h-7"/><path d="M12 12H5l-2 2.5L5 17h7"/></svg></div></td>
+              <td class="rule">Scent of Information<small>not “3 clicks”</small></td>
+              <td>Make every link and label point clearly to the next step.</td>
+              <td>Users quit when they lose the trail, not after 3 clicks.</td>
+            </tr>
+            <tr>
+              <td class="ic"><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c2410c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 20l7-11 4 6 3-4 6 9z"/><path d="M16 11V3l4 2-4 2"/></svg></div></td>
+              <td class="rule">Peak-End Rule</td>
+              <td>Users judge an experience by its peak and its end.</td>
+              <td>A delightful success screen lifts the whole journey.</td>
+            </tr>
+            <tr>
+              <td class="ic"><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c2410c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.5 6.5L21 12l-6.5 2.5L12 21l-2.5-6.5L3 12l6.5-2.5z"/></svg></div></td>
+              <td class="rule">Aesthetic-Usability Effect</td>
+              <td>Users forgive minor issues in a beautiful UI.</td>
+              <td>High-fidelity polish lowers frustration.</td>
+            </tr>
+            <tr>
+              <td class="ic"><div class="ico"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#c2410c" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="13" r="8"/><path d="M12 9v4l2.5 2.5M9 2h6"/></svg></div></td>
+              <td class="rule">The Buffer Zone<small>~100ms open / ~300–500ms close</small></td>
+              <td>Delay hover dropdowns slightly before opening and closing.</td>
+              <td>No flicker when the cursor glances past; menus stay open on the way in.</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </article>
+
+    <!-- 6. Front-end UX-Dev -->
+    <article class="card red">
+      <h2>6. Front-End “UX-Dev”</h2>
+      <div class="body spread">
+        <div class="item">
+          <div class="viz cls">
+            <div class="img-box"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#991b1b" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 16l5-5 4 4 3-3 6 6"/></svg></div>
+            <code>aspect-ratio:<br>16 / 9;</code>
+          </div>
+          <h3>Prevent Layout Shift (CLS)</h3>
+          <p>Set width and height, or aspect-ratio, on every image.</p>
+        </div>
+        <div class="item">
+          <div class="viz fonts">
+            <div class="big">Aa</div>
+            <code>system-ui,<br>-apple-system,<br>BlinkMacSystemFont</code>
+          </div>
+          <h3>System Fonts First</h3>
+          <p>Instant loading and a native feel for data-heavy dashboards.</p>
+        </div>
+        <div class="item">
+          <div class="errs">
+            <div class="viz"><strong>404</strong><span>Page not found</span><em>Go home</em></div>
+            <div class="viz"><strong>∅</strong><span>No results</span><em>Clear filters</em></div>
+          </div>
+          <h3>Error States Are UI</h3>
+          <p>Design 404 and empty states with care. Always give a way back.</p>
+        </div>
+      </div>
+    </article>
+  </section>
+
+  <div class="golden">
+    <svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#fde68a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9c.6.5 1 1.2 1 2.1h5c0-.9.4-1.6 1-2.1A6 6 0 0 0 12 3z"/></svg>
+    <p><b>The Golden Rule:</b> If the user has to think about the interface, the interface has failed. Good UX is invisible.</p>
+  </div>
+
+  <footer>
+    <span>github.com/eybox/the-ultimate-web-ux-ui-cheatsheet</span>
+    <span>Evgeni Yordanov · CC BY-NC 4.0</span>
+  </footer>
+</main>
+</body>
+</html>

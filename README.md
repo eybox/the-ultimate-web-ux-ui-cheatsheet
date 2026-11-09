@@ -4,7 +4,7 @@ A one-page reference for product teams: where high-level design theory meets the
 
 [![The Ultimate UX/UI & Front-End Cheat Sheet (2026)](cheatsheet.png)](cheatsheet.png)
 
-*Click the image for the full-resolution version (1728 × 2464).*
+*Click the image for the full-resolution version (1920 × 3406).*
 
 ---
 
@@ -70,7 +70,15 @@ A one-page reference for product teams: where high-level design theory meets the
 
 Made by [Evgeni Yordanov](https://github.com/eybox).
 
-> **Note:** The README is the up-to-date version. Two rules have been revised since the image was made: "The Rule of 3" is now "Scent of Information", and the Buffer Zone delay has changed from 20ms to ~100ms open / ~300–500ms close.
+## Editing the image
+
+The image is built from [`src/cheatsheet.html`](src/cheatsheet.html). Edit it, then render it with headless Chrome at 2× scale:
+
+```bash
+chrome --headless=new --hide-scrollbars --force-device-scale-factor=2 --window-size=960,2400 --screenshot=cheatsheet.png src/cheatsheet.html
+```
+
+Then crop the empty space below the footer.
 
 ## License
 
